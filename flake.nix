@@ -4,18 +4,17 @@
     blog.url = "github:jneem/blog";
   };
 
-  outputs = { nixpkgs, ... }@inputs:
+  outputs = { nixpkgs, flake-utils, ... }@inputs:
     let
-      system = "aarch64-linux";
-      #system = "x86_64-linux";
+      # TODO: figure out how to have this in cachix
+      wwwRoot = inputs.blog.packages.aarch64-linux.default;
     in {
       nixosConfigurations.treeman-ranch = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = inputs;
+        system = "aarch64-linux";
 
         modules = [
           (import ./configuration.nix)
-          (import ./blog-server.nix { inherit inputs; })
+          (import ./blog-server.nix { inherit wwwRoot; })
           {
             system.stateVersion = "23.05";
           }

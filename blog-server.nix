@@ -1,15 +1,12 @@
-{ inputs, ... }:
-let 
-  blogFiles = inputs.blog.packages.aarch64-linux.default;
-in
+{ wwwRoot }:
+{ pkgs, ... }:
 {
   services.nginx = {
     enable = true;
-    virtualHosts."neeman.me" = {
-      addSSL = true;
+    virtualHosts."joe.neeman.me" = {
+      forceSSL = true;
       enableACME = true;
-      root = blogFiles;
-      serverAliases = [ "www.neeman.me" "joe.neeman.me" "www.joe.neeman.me" ];
+      root = wwwRoot;
     };
   };
 
