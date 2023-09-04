@@ -6,7 +6,6 @@
 
   outputs = { nixpkgs, flake-utils, ... }@inputs:
     let
-      # TODO: figure out how to have this in cachix
       wwwRoot = inputs.blog.packages.aarch64-linux.default;
     in {
       nixosConfigurations.treeman-ranch = nixpkgs.lib.nixosSystem {
@@ -14,6 +13,8 @@
 
         modules = [
           (import ./configuration.nix)
+          (import ./hardware-configuration.nix)
+          (import ./networking.nix) # generated at runtime by nixos-infect
           (import ./blog-server.nix { inherit wwwRoot; })
           {
             system.stateVersion = "23.05";
