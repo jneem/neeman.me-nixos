@@ -23,11 +23,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1693771787,
-        "narHash": "sha256-aWC3qrJ4TMy2nrRQJkyzRqs+C1d/6K1NBcPQTAsgOh8=",
+        "lastModified": 1705767795,
+        "narHash": "sha256-pWfYK7pkuS4YrIlqYT/XvrFfvdRrcy2beC31nFFgC5M=",
         "owner": "jneem",
         "repo": "blog",
-        "rev": "a4b4a462ba65e83641768e4e92be34338251bab3",
+        "rev": "acf98bc36fd6b41925b52bb4b7904c8e4553e009",
         "type": "github"
       },
       "original": {
