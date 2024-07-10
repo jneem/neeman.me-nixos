@@ -1,4 +1,12 @@
-{ ... }: {
+{ pkgs, ... }:
+let
+  pythonVolEnv = pkgs.python3.withPackages (ps: with ps; [
+    numpy
+    pandas
+    yfinance
+  ]);
+in
+{
   imports = [
     
   ];
@@ -21,8 +29,17 @@
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKq2IwKZB9xrJyVhSgomBsZQfGrjBVT8PFa6j7iCvT8t"
   ];
 
+  time.timeZone = "America/Chicago";
+
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [ 22 80 443 ];
+  };
+
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      "0,10,20,30,40,50 7-16 * * 1-5 ${pythonVolEnv}/bin/python3 /root/vol/scrape.py"
+    ];
   };
 }
