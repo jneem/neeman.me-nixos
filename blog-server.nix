@@ -137,6 +137,11 @@
           };
         };
       };
+      # TODO: without this, loki complains about the v11 schema below.
+      # Maybe once the v13 schema has taken effect we can remove this?
+      limits_config = {
+        allow_structured_metadata = false;
+      };
       schema_config = {
         configs = [
           {
@@ -144,6 +149,16 @@
             store = "boltdb-shipper";
             object_store = "filesystem";
             schema = "v11";
+            index = {
+              prefix = "index_";
+              period = "24h";
+            };
+          }
+          {
+            from = "2024-07-11";
+            store = "tsdb";
+            object_store = "filesystem";
+            schema = "v13";
             index = {
               prefix = "index_";
               period = "24h";

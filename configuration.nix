@@ -4,6 +4,7 @@ let
     numpy
     pandas
     yfinance
+    pyarrow
   ]);
 in
 {

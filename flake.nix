@@ -4,7 +4,7 @@
     blog.url = "github:jneem/blog";
   };
 
-  outputs = { nixpkgs, flake-utils, ... }@inputs:
+  outputs = { nixpkgs, ... }@inputs:
     let
       wwwRoot = inputs.blog.packages.aarch64-linux.default;
     in {
