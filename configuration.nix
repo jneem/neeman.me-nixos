@@ -9,7 +9,7 @@ let
 in
 {
   imports = [
-    
+    ./restic.nix
   ];
 
   nix = {
@@ -37,10 +37,38 @@ in
     allowedTCPPorts = [ 22 80 443 ];
   };
 
-  services.cron = {
+  systemd.timers."vol-scrape" = {
+    wantedBy = ["timers.target"];
+    timerConfig = {
+      OnCalendar = "Mon..Fri *-*-* 07..16/1:00,10,20,30,40,50";
+      Unit = "vol-scrape.service";
+    };
+  };
+
+  systemd.services."vol-scrape" = {
+    script = ''
+      set -eu
+      ${pythonVolEnv}/bin/python3 /root/vol/scrape.py
+    '';
+
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+    };
+  };
+
+  mailserver = {
     enable = true;
-    systemCronJobs = [
-      "0,10,20,30,40,50 7-16 * * 1-5 ${pythonVolEnv}/bin/python3 /root/vol/scrape.py"
-    ];
+    fqdn = "mail.neeman.me";
+    domains = [ "neeman.me" ];
+
+    loginAccounts = {
+      "joe@neeman.me" = {
+        hashedPasswordFile = "/var/lib/secrets/email_joe";
+        aliases = ["postmaster@neeman.me"];
+      };
+    };
+
+    certificateScheme = "acme-nginx";
   };
 }

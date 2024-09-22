@@ -1,10 +1,14 @@
 {
   inputs = {
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    snm.url = "gitlab:simple-nixos-mailserver/nixos-mailserver";
+    snm.inputs.nixpkgs.follows = "nixpkgs";
     blog.url = "github:jneem/blog";
   };
 
-  outputs = { nixpkgs, ... }@inputs:
+  outputs = { nixpkgs, agenix, ... }@inputs:
     let
       wwwRoot = inputs.blog.packages.aarch64-linux.default;
     in {
@@ -19,6 +23,8 @@
           {
             system.stateVersion = "23.05";
           }
+          inputs.snm.nixosModules.mailserver
+          agenix.nixosModules.default
         ];
       };
     };
