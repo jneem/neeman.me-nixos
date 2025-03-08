@@ -3,8 +3,8 @@ let
   pythonVolEnv = pkgs.python3.withPackages (ps: with ps; [
     numpy
     pandas
-    yfinance
     pyarrow
+    yfinance
   ]);
 in
 {
@@ -37,24 +37,24 @@ in
     allowedTCPPorts = [ 22 80 443 ];
   };
 
-  systemd.timers."vol-scrape" = {
-    wantedBy = ["timers.target"];
+  systemd.timers.volScrape = {
+    enable = true;
+    wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnCalendar = "Mon..Fri *-*-* 07..16/1:00,10,20,30,40,50";
-      Unit = "vol-scrape.service";
+      Unit = "vol-scrape";
+      OnCalendar = "Mon..Fri *-*-* 7..16:00,10,20,30,40,50:* America/Chicago";
     };
   };
 
-  systemd.services."vol-scrape" = {
-    script = ''
-      set -eu
-      ${pythonVolEnv}/bin/python3 /root/vol/scrape.py
-    '';
-
+  systemd.services.volScrape = {
     serviceConfig = {
       Type = "oneshot";
       User = "root";
     };
+    script = ''
+      set -eu
+      ${pythonVolEnv}/bin/python3 /root/vol/scrape.py
+    '';
   };
 
   mailserver = {
