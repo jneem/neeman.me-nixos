@@ -3,6 +3,7 @@ let
   pythonVolEnv = pkgs.python3.withPackages (ps: with ps; [
     numpy
     pandas
+    pyarrow
     yfinance
   ]);
 in
