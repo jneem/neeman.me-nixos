@@ -64,11 +64,12 @@ in
 
     loginAccounts = {
       "joe@neeman.me" = {
-        hashedPasswordFile = "/var/lib/secrets/email_joe";
+        hashedPasswordFile = builtins.path { path = ./secrets/mail_joe.txt; };
         aliases = ["postmaster@neeman.me"];
       };
     };
 
     certificateScheme = "acme-nginx";
+    stateVersion = 3;
   };
 }
