@@ -20,6 +20,7 @@
           (import ./hardware-configuration.nix)
           (import ./networking.nix) # generated at runtime by nixos-infect
           (import ./blog-server.nix { inherit wwwRoot; })
+          (import ./soju.nix)
           {
             system.stateVersion = "23.05";
           }

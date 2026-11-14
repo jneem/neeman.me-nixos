@@ -1,12 +1,4 @@
-{ pkgs, ... }:
-let
-  pythonVolEnv = pkgs.python3.withPackages (ps: with ps; [
-    numpy
-    pandas
-    pyarrow
-    yfinance
-  ]);
-in
+{ pkgs, config, ... }:
 {
   imports = [
     ./restic.nix
@@ -23,7 +15,10 @@ in
   zramSwap.enable = true;
   networking.hostName = "treeman-ranch-nixos";
   networking.domain = "";
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings.PasswordAuthentication = false;
+  };
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGpAveBRfqrg7a41+qdOxw5WT3CbEi7dwlgKObSM85YP"
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM3Hjr4Dv+5hKLBzAxO83oiNHA0ZmaG0/LINPVOKs9+4"
@@ -37,39 +32,25 @@ in
     allowedTCPPorts = [ 22 80 443 ];
   };
 
-  systemd.timers.volScrape = {
-    enable = true;
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      Unit = "vol-scrape";
-      OnCalendar = "Mon..Fri *-*-* 7..16:00,10,20,30,40,50:* America/Chicago";
-    };
-  };
-
-  systemd.services.volScrape = {
-    serviceConfig = {
-      Type = "oneshot";
-      User = "root";
-    };
-    script = ''
-      set -eu
-      ${pythonVolEnv}/bin/python3 /root/vol/scrape.py
-    '';
-  };
-
   mailserver = {
     enable = true;
     fqdn = "mail.neeman.me";
     domains = [ "neeman.me" ];
 
-    loginAccounts = {
+    accounts = {
       "joe@neeman.me" = {
         hashedPasswordFile = builtins.path { path = ./secrets/mail_joe.txt; };
         aliases = ["postmaster@neeman.me"];
       };
     };
 
-    certificateScheme = "acme-nginx";
+    x509.useACMEHost = config.mailserver.fqdn;
     stateVersion = 3;
   };
+
+  services.nginx = {
+    enable = true;
+    virtualHosts.${config.mailserver.fqdn}.enableACME = true;
+  };
+
 }
