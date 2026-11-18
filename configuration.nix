@@ -50,7 +50,10 @@
 
   services.nginx = {
     enable = true;
-    virtualHosts.${config.mailserver.fqdn}.enableACME = true;
+    virtualHosts.${config.mailserver.fqdn} = {
+      enableACME = true;
+      http2 = false;
+    };
   };
 
 }

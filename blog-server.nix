@@ -22,6 +22,7 @@
 
     virtualHosts."joe.neeman.me" = {
       forceSSL = true;
+      http2 = false;
       enableACME = true;
       root = wwwRoot;
       extraConfig = ''
